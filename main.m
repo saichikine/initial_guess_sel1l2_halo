@@ -169,8 +169,8 @@ fprintf('done.\n')
 
 figure
 addToolbarExplorationButtons(gcf);
-plot3(map1.map_points(4,:),map1.map_points(5,:),map1.map_points(6,:),'r.-','DisplayName','Unstable manifold from L1 orbit'); hold on
-plot3(map2.map_points(4,:),map2.map_points(5,:),map2.map_points(6,:),'b.-','DisplayName','Stable manifold to L2 orbit'); hold off
+plot3(map1.map_points(1,:),map1.map_points(2,:),map1.map_points(3,:),'r.-','DisplayName','Unstable manifold from L1 orbit'); hold on
+plot3(map2.map_points(1,:),map2.map_points(2,:),map2.map_points(3,:),'b.-','DisplayName','Stable manifold to L2 orbit'); hold off
 % xlim([-0.05 0.05])
 % zlim([0 0.3])
 xlabel('$$\dot{x}$$')
