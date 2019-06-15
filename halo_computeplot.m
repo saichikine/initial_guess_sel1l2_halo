@@ -243,7 +243,7 @@ function halo_orbit = halo_computeplot(mu, Az_km, L_km, L_point_string, halo_pol
 %         hold off
 
         % Close up around Lagrange point
-        subplot(2,1,2)
+        %subplot(2,1,2)
         addToolbarExplorationButtons(gcf) % Adds buttons to figure toolbar
         plot3(1-mu, 0, 0, 'ok', 'markerfacecolor', 'm', 'markersize', 8, 'DisplayName', 'Smaller Primary'); hold on % Smaller primary
         plot3(X_corrected_hist(1,1), X_corrected_hist(1,2), X_corrected_hist(1,3), 'ok', 'markerfacecolor', 'y', 'DisplayName', 'Initial Point'); hold on
@@ -257,5 +257,6 @@ function halo_orbit = halo_computeplot(mu, Az_km, L_km, L_point_string, halo_pol
         grid on;
         legend();
         hold off
+        set(gca,'DataAspectRatio',[1 1 1]);
     end
 end

@@ -135,14 +135,11 @@ X0_L2 = halo_IC_L2_southern{1};
 figure
 addToolbarExplorationButtons(gcf)
 hold on
-scatter3((1-mu_SE)*L_km, 0, 0,'x','DisplayName', 'Earth');
-scatter3(L_points(1,1)*L_km, L_points(2,1)*L_km, 0, 70, 'bd', 'filled', 'DisplayName', '$$L_1$$');
-scatter3(L_points(1,2)*L_km, L_points(2,2)*L_km, 0, 70, 'rd', 'filled', 'DisplayName', '$$L_2$$');
+scatter3(x_L1*L_km, 0, 0, 'd', 'MarkerFaceColor','b','MarkerEdgeColor','k','DisplayName','L1'); hold on
+scatter3(x_L2*L_km, 0, 0, 'd', 'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','L2');
+plot3((1-mu_SE)*L_km, 0, 0, 'ok', 'markerfacecolor', 'b', 'markersize', 10, 'DisplayName', 'Earth'); hold on % Smaller primary
 plot3(X_hist_L1(:,1)*L_km, X_hist_L1(:,2)*L_km, X_hist_L1(:,3)*L_km, 'b-','DisplayName', '$$L_1$$ Orbit'); hold on
-plot3(X_hist_L1(1,1)*L_km, X_hist_L1(1,2)*L_km, X_hist_L1(1,3)*L_km, 'ok', 'markerfacecolor', 'y', 'DisplayName', '$$L_1$$ Halo Initial Point'); hold on
-
 plot3(X_hist_L2(:,1)*L_km, X_hist_L2(:,2)*L_km, X_hist_L2(:,3)*L_km, 'r-','DisplayName', '$$L_2$$ Halo Orbit'); hold on
-plot3(X_hist_L2(1,1)*L_km, X_hist_L2(1,2)*L_km, X_hist_L2(1,3)*L_km, 'ok', 'markerfacecolor', 'y', 'DisplayName', '$$L_2$$ Halo Initial Point'); hold on
 hold off
 grid on
 h = get(gca,'DataAspectRatio');
@@ -155,7 +152,9 @@ legend()
 xlabel('$$x [km]$$')
 ylabel('$$y [km]$$')
 zlabel('$$z [km]$$')
-title("Initial and target halo orbits")
+view([-37.1298828125,29.7275390625]);
+set(gcf,'color','w')
+%title("Initial and target halo orbits")
 
 %% Poincare maps for both orbits
 clc
@@ -173,12 +172,17 @@ plot3(map1.map_points(1,:),map1.map_points(2,:),map1.map_points(3,:),'r.-','Disp
 plot3(map2.map_points(1,:),map2.map_points(2,:),map2.map_points(3,:),'b.-','DisplayName','Stable manifold to L2 orbit'); hold off
 % xlim([-0.05 0.05])
 % zlim([0 0.3])
-xlabel('$$\dot{x}$$')
-ylabel('$$\dot{y}$$')
-zlabel('$$\dot{z}$$')
+view([90 0])
+% xlabel('$$\dot{x}$$')
+% ylabel('$$\dot{y}$$')
+% zlabel('$$\dot{z}$$')
+xlabel('x')
+ylabel('y')
+zlabel('z')
 grid on
 title('Combined Poincare map')
 legend()
+set(gcf,'color','w')
  
 %%
 % Now use multiple shooting to connect the two manifold segments
@@ -187,6 +191,9 @@ legend()
 % close
 crit_index1 = 7; % manifold trajectory index based on looking at Poincare maps
 crit_index2 = 56;
+
+% crit_index1 = 198;
+% crit_index2 = 97;
 
 initial_state = map1.man_trajs{crit_index1}{2}(1:6,1);
 target_state = map2.man_trajs{crit_index2}{2}(1:6,1);
@@ -197,6 +204,9 @@ ode_opts = odeset('RelTol',5e-14,'AbsTol',1e-20);
 
 phase1_time = 2.15;
 phase2_time = 2.12;
+
+% phase1_time = 2.1;
+% phase2_time = 2.15;
 fprintf('Simulating initial guesses for departure and arrival phases...')
 tic
 % [phase1_t_hist,phase1_state_hist] = ode113(@(t,X) CR3BP(t,X,mu_SE), linspace(0, phase1_time, phase1_num_stages), initial_state, ode_opts);
@@ -209,9 +219,9 @@ toc
 % Plot
 figure
 addToolbarExplorationButtons(gcf) % Adds buttons to figure toolbar
+scatter3(x_L1, 0, 0, 'd', 'MarkerFaceColor','b','MarkerEdgeColor','k','DisplayName','L1'); hold on
+scatter3(x_L2, 0, 0, 'd', 'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','L2');
 plot3(1-mu_SE, 0, 0, 'ok', 'markerfacecolor', 'b', 'markersize', 10, 'DisplayName', 'Earth'); hold on % Smaller primary
-plot3(x_L1, 0, 0, 'dk', 'markerfacecolor', 'r', 'DisplayName', '$$L_1$$'); hold on % L1 location
-plot3(x_L2, 0, 0, 'dk' , 'markerfacecolor', 'b', 'DisplayName', '$$L_2$$'); hold on % L2 location
 plot3(phase1_state_hist(1,1), phase1_state_hist(1,2), phase1_state_hist(1,3), 'ok', 'markerfacecolor','g','DisplayName','Departure Phase Initial Point'); hold on
 plot3(phase2_state_hist(1,1), phase2_state_hist(1,2), phase2_state_hist(1,3), 'ok', 'markerfacecolor',[244,179,66]./255, 'DisplayName', 'Arrival Phase Initial Point'); hold on
 plot3(phase1_state_hist(:,1), phase1_state_hist(:,2), phase1_state_hist(:,3), 'g-','DisplayName','Departure Phase Trajectory'); hold on
@@ -475,7 +485,7 @@ hold off
 %% Save results to file
 
 ms_results_initial_guess = struct('ms_results',ms_results,'chi',chi,'arc_initial_states',arc_initial_states,'arc_integration_times',arc_integration_times,'slack_vars',slack_vars,'num_nodes',N,'thrust_flags',thrust_flags,'L1_start_orbit',halo_IC_L1_southern,'L2_end_orbit',halo_IC_L2_southern);
-save('halo_trans_ig_100_b.mat','ms_results_initial_guess');
+save('halo_trans_ig_100_good.mat','ms_results_initial_guess');
 %%
 figure
 addToolbarExplorationButtons(gcf) % Adds buttons to figure toolbar

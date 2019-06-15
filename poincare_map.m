@@ -140,7 +140,7 @@ function results = poincare_map(mu, L_km, TU, orbit, prop_time_s, stability_stri
         perturbed_manifold_points(:,i) = X0;
         
         % propagate manifold(s) to Poincare surface of section
-        [t_man, X_man, te, Xe, ie] = ode113(@(t,X) CR3BP(t,X,mu), linspace(t_orbit(i),t_orbit(i)+prop_time,100), X0, ode_opts_poincare_event);
+        [t_man, X_man, te, Xe, ie] = ode113(@(t,X) CR3BP(t,X,mu), linspace(0,prop_time,100), X0, ode_opts_poincare_event);
         
         if ~isempty(Xe)
             % Save manifold trajectories

@@ -15,7 +15,7 @@ function constraint_vector = LT_continuity_endpoint_constraint_vec(chi, N, thrus
     g = [g; arc_initial_states(1:7,1)-reshape(initial_state(1:7),[],1); arc_initial_states(1:6,end)-reshape(final_state(1:6),[],1)];
     
     %% Slack variables for negative integration times
-    dt_min = 5e-2;
+    dt_min = 1e-2;
     for i = 1:length(arc_times_slack_vars)
         g = [g; arc_integration_times(i) - arc_times_slack_vars(i)^2 - dt_min];
     end
